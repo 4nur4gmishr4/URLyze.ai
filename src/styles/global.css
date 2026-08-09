@@ -1,0 +1,365 @@
+/* ============================================================
+   URLyze global styles — consumes tokens.css only.
+   Shared primitives (buttons, cards, inputs, badges, stripe).
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap');
+@import './tokens.css';
+
+/* ---- Reset ---- */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: var(--font-sans);
+	font-size: 16px;
+	line-height: 1.55;
+	color: var(--text);
+	background-color: var(--bg);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transition: background-color var(--duration-base) var(--ease-out),
+		color var(--duration-base) var(--ease-out);
+	min-height: 100vh;
+}
+
+::selection {
+	background-color: var(--selection-bg);
+	color: var(--ink);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	font-family: var(--font-sans);
+	color: var(--text);
+	line-height: 1.25;
+	text-wrap: balance;
+}
+
+a {
+	color: var(--link);
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+
+button {
+	font-family: inherit;
+	cursor: pointer;
+}
+
+:focus-visible {
+	outline: 2px solid var(--focus-ring);
+	outline-offset: 2px;
+	border-radius: var(--radius-xs);
+}
+
+:disabled {
+	cursor: not-allowed;
+}
+
+/* ---- Typography scale (matches DESIGN.md) ---- */
+.display {
+	font-family: var(--font-display);
+	font-size: clamp(40px, 8vw, 84px);
+	line-height: 1.05;
+	letter-spacing: -1.5px;
+	font-weight: 400;
+}
+.display-lg {
+	font-family: var(--font-display);
+	font-size: clamp(40px, 6vw, 64px);
+	line-height: 1.1;
+	letter-spacing: -1px;
+	font-weight: 400;
+}
+.heading-1 {
+	font-family: var(--font-display);
+	font-size: clamp(32px, 4.5vw, 52px);
+	line-height: 1.15;
+	letter-spacing: -0.5px;
+	font-weight: 400;
+}
+.heading-2 {
+	font-size: clamp(28px, 3vw, 36px);
+	line-height: 1.2;
+	letter-spacing: -0.5px;
+	font-weight: 500;
+}
+.heading-3 {
+	font-size: 28px;
+	line-height: 1.25;
+	font-weight: 500;
+}
+.heading-4 {
+	font-size: 22px;
+	line-height: 1.3;
+	font-weight: 500;
+}
+.heading-5 {
+	font-size: 18px;
+	line-height: 1.4;
+	font-weight: 500;
+}
+.subtitle {
+	font-size: 18px;
+	line-height: 1.5;
+	font-weight: 400;
+}
+.body {
+	font-size: 16px;
+	line-height: 1.55;
+	font-weight: 400;
+}
+.body-sm {
+	font-size: 14px;
+	line-height: 1.5;
+	font-weight: 400;
+}
+.caption {
+	font-size: 13px;
+	line-height: 1.4;
+	font-weight: 400;
+	color: var(--text-secondary);
+}
+.eyebrow {
+	font-size: 11px;
+	line-height: 1.4;
+	font-weight: 600;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--text-secondary);
+}
+
+.text-secondary {
+	color: var(--text-secondary);
+}
+.text-muted {
+	color: var(--text-muted);
+}
+.text-accent {
+	color: var(--accent);
+}
+
+/* ---- Layout helpers ---- */
+.container {
+	width: min(1280px, 100% - 2 * var(--space-xxl));
+	margin-inline: auto;
+}
+.section {
+	padding-block: var(--space-section);
+}
+.stack {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-md);
+}
+
+/* ---- Buttons (DESIGN.md: 8px radius, 10/20 padding) ---- */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-xs);
+	font-family: var(--font-sans);
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.3;
+	padding: 10px 20px;
+	border-radius: var(--radius-md);
+	border: 1px solid transparent;
+	transition: background-color var(--duration-fast) var(--ease-out),
+		border-color var(--duration-fast) var(--ease-out),
+		transform var(--duration-fast) var(--ease-out),
+		box-shadow var(--duration-fast) var(--ease-out);
+	min-height: 44px;
+	white-space: nowrap;
+}
+.btn:active {
+	transform: translateY(1px);
+}
+.btn-primary {
+	background-color: var(--accent);
+	color: var(--text-on-accent);
+}
+.btn-primary:hover {
+	background-color: var(--accent-hover);
+}
+.btn-primary:disabled {
+	background-color: var(--border);
+	color: var(--text-faint);
+}
+.btn-dark {
+	background-color: var(--ink);
+	color: var(--text-on-dark);
+}
+.btn-dark:hover {
+	background-color: var(--charcoal);
+}
+.btn-secondary {
+	background-color: transparent;
+	color: var(--text);
+	border-color: var(--border-strong);
+}
+.btn-secondary:hover {
+	border-color: var(--accent);
+}
+.btn-cream {
+	background-color: var(--surface-accent);
+	color: var(--text);
+	border-color: var(--border-accent);
+}
+.btn-on-cream {
+	background-color: var(--canvas);
+	color: var(--text);
+	border-color: var(--border-accent);
+}
+.btn-link {
+	background: transparent;
+	color: var(--link);
+	padding: 0;
+	min-height: auto;
+	font-size: 14px;
+	font-weight: 500;
+}
+.btn-link:hover {
+	text-decoration: underline;
+}
+.btn-block {
+	width: 100%;
+}
+
+/* ---- Cards (DESIGN.md: 12px radius, hairline border) ---- */
+.card {
+	background-color: var(--surface-1);
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-lg);
+	padding: var(--space-xl);
+}
+.card-feature {
+	background-color: var(--surface-1);
+	border: 1px solid var(--border-soft);
+	border-radius: var(--radius-lg);
+	padding: var(--space-xxl);
+	box-shadow: var(--shadow-2);
+}
+.card-cream {
+	background-color: var(--surface-accent);
+	color: var(--text);
+	border: 1px solid var(--border-accent);
+	border-radius: var(--radius-lg);
+	padding: var(--space-xxl);
+}
+.card-dark {
+	background-color: var(--surface-code);
+	color: var(--text-on-dark);
+	border-radius: var(--radius-lg);
+	padding: var(--space-xxl);
+}
+
+/* ---- Inputs (44px height, 8px radius) ---- */
+.input {
+	display: block;
+	width: 100%;
+	height: 44px;
+	padding: var(--space-sm) var(--space-md);
+	font-family: var(--font-sans);
+	font-size: 16px;
+	color: var(--text);
+	background-color: var(--canvas);
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-md);
+	transition: border-color var(--duration-fast) var(--ease-out),
+		box-shadow var(--duration-fast) var(--ease-out);
+}
+.input::placeholder {
+	color: var(--text-faint);
+}
+.input:focus {
+	outline: none;
+	border: 2px solid var(--accent);
+	padding: calc(var(--space-sm) - 1px) calc(var(--space-md) - 1px);
+}
+.textarea {
+	height: auto;
+	min-height: 120px;
+	resize: vertical;
+}
+
+/* ---- Badges ---- */
+.badge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-xxs);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.4;
+	border-radius: var(--radius-full);
+	padding: 4px 10px;
+}
+.badge-orange {
+	background-color: var(--accent);
+	color: var(--text-on-accent);
+}
+.badge-cream {
+	background-color: var(--accent-soft);
+	color: var(--text);
+}
+.badge-dark {
+	background-color: var(--ink);
+	color: var(--text-on-dark);
+}
+
+/* ---- Signature sunset stripe ---- */
+.sunset-stripe {
+	background: var(--sunset-gradient);
+	height: 3px;
+	width: 100%;
+}
+
+/* ---- Skeleton shimmer ---- */
+.skeleton {
+	background: linear-gradient(
+		90deg,
+		var(--border-soft) 25%,
+		var(--border) 50%,
+		var(--border-soft) 75%
+	);
+	background-size: 200% 100%;
+	animation: shimmer 1.6s infinite;
+	border-radius: var(--radius-md);
+}
+@keyframes shimmer {
+	0% {
+		background-position: 200% 0;
+	}
+	100% {
+		background-position: -200% 0;
+	}
+}
+
+/* ---- Motion (defaults, respects reduced motion) ---- */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
