@@ -38,15 +38,16 @@
 </script>
 
 <div bind:this={root} class="hero" data-hero-root>
-	<span class="kicker" data-hero>One URL in, three ways out.</span>
+	<span class="kicker" data-hero>One link in, three documents out.</span>
 	<h1 class="headline" data-hero>
 		Turn any link into
 		<br />
 		<span class="typewrap"><Typewriter words={['an executive sketch.', 'study notes.', 'a slide outline.']} /></span>
 	</h1>
 	<p class="sub" data-hero>
-		Paste an article or a YouTube video. We read it, Gemini distills it, and you
-		get three ready-to-use artifacts — executive sketch, study notes, slide outline.
+		Paste an article, a blog post, or a YouTube video. We read the whole thing for
+		you, pull out the key ideas, and hand back three clean documents. One for a
+		fast read, one for real studying, one for presenting to other people.
 	</p>
 
 	<form
@@ -61,14 +62,25 @@
 		<AnalyzeButton {loading} disabled={loading} />
 	</form>
 
-	<p class="trust-line" data-hero>
-		<span class="dot" aria-hidden="true"></span>
-		No account. Free. Works in your language.
-	</p>
+	<div class="perks" data-hero>
+		<span class="perk">
+			<span class="dot" aria-hidden="true"></span>
+			No account needed
+		</span>
+		<span class="perk">
+			<span class="dot" aria-hidden="true"></span>
+			Free to use
+		</span>
+		<span class="perk">
+			<span class="dot" aria-hidden="true"></span>
+			Works with any language
+		</span>
+	</div>
 </div>
 
 <style>
 	.hero {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -77,6 +89,15 @@
 		padding: var(--space-xxl) var(--space-md) var(--space-xl);
 		max-width: 720px;
 		margin: 0 auto;
+	}
+	.hero::before {
+		content: '';
+		position: absolute;
+		inset: -40px;
+		pointer-events: none;
+		opacity: 0.06;
+		background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		background-size: 128px 128px;
 	}
 	.kicker {
 		font-size: 13px;
@@ -114,13 +135,20 @@
 	.analyze-form :global(.url-form) {
 		flex: 1;
 	}
-	.trust-line {
+	.perks {
 		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		gap: var(--space-md);
+		margin: var(--space-xs) 0 0;
+	}
+	.perk {
+		display: inline-flex;
 		align-items: center;
 		gap: var(--space-xs);
-		margin: var(--space-xs) 0 0;
 		font-size: 13px;
-		color: var(--text-faint);
+		color: var(--text-secondary);
 	}
 	.dot {
 		width: 7px;
