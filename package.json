@@ -23,6 +23,7 @@
     "drizzle-orm": "^0.45.2",
     "gsap": "^3.13.0",
     "ipaddr.js": "^2.2.0",
+    "jose": "^5.10.0",
     "micromark": "^4.0.2",
     "pptxgenjs": "^4.0.1",
     "youtubei.js": "^17.2.0",
