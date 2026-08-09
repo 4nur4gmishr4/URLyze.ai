@@ -52,6 +52,33 @@ describe('security/ip', () => {
 			expect(isGlobalUnicast('224.0.0.1')).toBe(false);
 			expect(isGlobalUnicast('255.255.255.255')).toBe(false);
 		});
+
+		it('blocks CGNAT shared address space', () => {
+			expect(isGlobalUnicast('100.64.0.1')).toBe(false);
+			expect(isGlobalUnicast('100.127.255.255')).toBe(false);
+		});
+
+		it('blocks TEST-NET and IETF reserved ranges', () => {
+			expect(isGlobalUnicast('192.0.2.1')).toBe(false); // TEST-NET-1
+			expect(isGlobalUnicast('198.51.100.7')).toBe(false); // TEST-NET-2
+			expect(isGlobalUnicast('203.0.113.9')).toBe(false); // TEST-NET-3
+			expect(isGlobalUnicast('192.0.0.1')).toBe(false); // IETF protocol assignments
+			expect(isGlobalUnicast('192.88.99.1')).toBe(false); // 6to4 relay anycast
+			expect(isGlobalUnicast('198.18.0.1')).toBe(false); // benchmarking
+		});
+
+		it('blocks IPv6 unique-local, documentation, and multicast', () => {
+			expect(isGlobalUnicast('fc00::1')).toBe(false); // ULA
+			expect(isGlobalUnicast('fd12:3456::1')).toBe(false); // ULA
+			expect(isGlobalUnicast('2001:db8::1')).toBe(false); // documentation
+			expect(isGlobalUnicast('ff02::1')).toBe(false); // multicast
+		});
+
+		it('blocks IPv4-mapped private and reserved after normalization', () => {
+			expect(isGlobalUnicast('::ffff:192.168.1.1')).toBe(false);
+			expect(isGlobalUnicast('::ffff:100.64.0.1')).toBe(false);
+			expect(isGlobalUnicast('::ffff:192.0.2.1')).toBe(false);
+		});
 	});
 
 	describe('hasBlockedAddress', () => {
