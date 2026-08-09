@@ -33,6 +33,9 @@ A user-supplied URL is never fetched directly.
   DB query. Visitors only ever see their own history.
 - **No secrets in code**: Gemini key goes in the `x-goog-api-key` header, never
   in a URL. `.env` is gitignored; the committed `.env.example` holds placeholders.
+  A **pre-commit hook** (`.githooks/pre-commit`, enabled via
+  `git config core.hooksPath .githooks`) refuses to stage any file containing an
+  `AIza…` Gemini key, so a secret can't be committed even by accident.
 - **CSP**: nonce mode via `kit.csp` — `script-src 'self' 'strict-dynamic'`,
   `style-src 'self' 'unsafe-inline'`. Inline theme script carries the nonce.
 - **Response headers** (`hooks.server.ts`): `nosniff`, `strict-origin-when-cross-origin`,
