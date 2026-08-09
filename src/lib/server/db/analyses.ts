@@ -80,6 +80,12 @@ export async function deleteAnalysisById(ownerId: string, id: string): Promise<b
 	return result.length > 0;
 }
 
+/** Delete every analysis for this owner (settings → clear history). */
+export async function deleteAllAnalyses(ownerId: string): Promise<number> {
+	const result = await db.delete(analyses).where(eq(analyses.ownerId, ownerId)).returning({ id: analyses.id });
+	return result.length;
+}
+
 /** List this visitor's analyses with search / filter / sort / pagination. */
 export async function listAnalyses(ownerId: string, query: HistoryQuery) {
 	const term = query.search?.trim();
