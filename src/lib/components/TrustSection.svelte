@@ -17,7 +17,7 @@
 	];
 </script>
 
-<section class="trust" aria-labelledby="trust-title">
+<section id="trust" class="trust" aria-labelledby="trust-title">
 	<h2 id="trust-title" class="section-title">Made to stay simple</h2>
 	<ul class="points">
 		{#each points as point (point.title)}
