@@ -6,7 +6,6 @@
 	import ErrorState from '$lib/components/ErrorState.svelte';
 	import UrlInput from '$lib/components/UrlInput.svelte';
 	import AnalyzeButton from '$lib/components/AnalyzeButton.svelte';
-	import type { ArtifactKey } from '$lib/components/ArtifactNav.svelte';
 	import { analyze, getAnalysis, ApiError } from '$lib/client/api';
 	import type { AnalysisResult } from '$lib/types/analysis';
 
@@ -26,7 +25,6 @@
 	let result = $state<AnalysisResult | null>(null);
 	let step = $state<PipelineStep>('extract');
 	let error = $state<{ code: string; message: string; detail?: string; requestId?: string } | null>(null);
-	let activeTab = $state<ArtifactKey>('summary');
 
 	let isLoading = $derived(submittedUrl !== '' && result === null && error === null);
 
@@ -144,7 +142,7 @@
 			{/snippet}
 		</ErrorState>
 	{:else if result}
-		<ResultsView {result} active={activeTab} onchange={(k) => (activeTab = k)} />
+		<ResultsView {result} />
 	{:else}
 		<section class="progress-wrap" aria-live="polite" aria-busy="true">
 			<div class="progress-card">

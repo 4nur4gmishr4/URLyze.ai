@@ -1,20 +1,20 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
-	import Sidebar from '$lib/components/Sidebar.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 
 	let { data, children }: { data: LayoutData; children: Snippet } = $props();
 </script>
 
 <div class="app">
-	<Sidebar user={data.user} />
+	<Navbar user={data.user} />
 	<main id="main-content" class="content">{@render children()}</main>
 </div>
 
 <style>
 	.app {
 		display: flex;
-		align-items: stretch;
+		flex-direction: column;
 		min-height: 100vh;
 	}
 	.content {
@@ -26,9 +26,6 @@
 	}
 
 	@media (max-width: 768px) {
-		.app {
-			flex-direction: column;
-		}
 		.content {
 			padding: var(--space-md);
 		}
