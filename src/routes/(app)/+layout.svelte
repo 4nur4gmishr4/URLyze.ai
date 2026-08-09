@@ -1,11 +1,13 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+	import type { LayoutData } from './$types';
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
-	let { children } = $props();
+	let { data, children }: { data: LayoutData; children: Snippet } = $props();
 </script>
 
 <div class="app">
-	<Sidebar />
+	<Sidebar user={data.user} />
 	<main class="content">{@render children()}</main>
 </div>
 
