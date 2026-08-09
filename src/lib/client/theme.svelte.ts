@@ -29,7 +29,7 @@ function initialTheme(): Theme {
 	return storedTheme() ?? (browser && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 }
 
-export const theme = $state<Theme>(initialTheme());
+export let theme = $state<Theme>(initialTheme());
 
 /** Persist and apply the theme. `theme` is already reactive for the UI. */
 export function setTheme(next: Theme): void {
