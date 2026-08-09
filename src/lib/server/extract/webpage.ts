@@ -6,7 +6,7 @@ import { classifyQuality } from '../content/quality';
 import type { ExtractedContent, SourceMetadata } from '$lib/types/analysis';
 
 const MAX_TEXT_CHARS = 30_000;
-const MAX_HTML_BYTES = 3 * 1024 * 1024; // generous for metadata-rich pages, still bounded
+const MAX_HTML_BYTES = 5 * 1024 * 1024; // generous for metadata-rich pages, still bounded
 
 /** Content types we know how to parse. Anything else → UNSUPPORTED_CONTENT_TYPE. */
 const ACCEPTED_CONTENT_TYPES = ['text/html', 'application/xhtml+xml'];
@@ -121,7 +121,9 @@ export async function extractWebpage(url: URL): Promise<ExtractedContent> {
 		throw new AppError('EMPTY_CONTENT', 'No readable content could be found on that page');
 	}
 
-	const sliced = cleaned.slice(0, MAX_TEXT_CHARS);
+	const sliced = cleaned.length > MAX_TEXT_CHARS 
+		? cleaned.slice(0, MAX_TEXT_CHARS).replace(/\s\S*$/, '') 
+		: cleaned;
 	const wordCount = countWords(sliced);
 	const quality = classifyQuality({ isFallback: false, wordCount, sourceType: 'WEBPAGE' });
 
