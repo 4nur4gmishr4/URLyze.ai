@@ -7,7 +7,7 @@
 </script>
 
 <div class="site">
-	<Navbar />
+	<Navbar user={null} />
 	<main class="main">
 		<div class="error-box">
 			<span class="code">{page.status}</span>
