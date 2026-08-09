@@ -40,8 +40,8 @@
 		display: inline-block;
 		width: 16px;
 		height: 16px;
-		border: 2px solid rgba(255, 255, 255, 0.3);
-		border-top-color: #fff;
+		border: 2px solid color-mix(in srgb, var(--on-primary) 30%, transparent);
+		border-top-color: var(--on-primary);
 		border-radius: 50%;
 		animation: spin 0.6s linear infinite;
 	}
