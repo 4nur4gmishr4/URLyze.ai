@@ -66,7 +66,7 @@
 
 <span class="typewriter" aria-live="off">
 	{displayed}
-	<span class="caret" aria-hidden="true" />
+	<span class="caret" aria-hidden="true"></span>
 </span>
 
 <style>
