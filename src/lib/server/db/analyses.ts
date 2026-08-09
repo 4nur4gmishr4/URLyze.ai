@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { and, asc, desc, eq, or, sql } from 'drizzle-orm';
 import { AppError } from '$lib/types/errors';
 import type { AnalysisResult, HistoryQuery, Slide } from '$lib/types/analysis';
@@ -71,7 +72,7 @@ export async function insertAnalysis(row: NewAnalysisRow): Promise<AnalysisRow[]
 		return [
 			{
 				...row,
-				id: 'temp-' + Date.now(),
+				id: 'temp-' + randomUUID(),
 				createdAt: new Date(),
 				updatedAt: new Date()
 			} as AnalysisRow
