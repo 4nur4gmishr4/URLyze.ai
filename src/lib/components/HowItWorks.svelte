@@ -1,5 +1,7 @@
 <script lang="ts">
-	/** Three-step explainer for the landing page. Static, no animation state. */
+	import { scrollReveal } from '$lib/client/scrollReveal';
+
+	/** Three-step explainer for the landing page. Steps reveal on scroll. */
 
 	const steps = [
 		{
@@ -20,11 +22,11 @@
 	];
 </script>
 
-<section id="how" class="how" aria-labelledby="how-title">
+<section id="how" class="how" aria-labelledby="how-title" use:scrollReveal={{ stagger: 0.1 }}>
 	<h2 id="how-title" class="section-title">How it works</h2>
 	<ol class="steps">
 		{#each steps as step, i (step.num)}
-			<li class="step">
+			<li class="step" data-reveal-item>
 				<span class="step-num" aria-hidden="true">{step.num}</span>
 				<h3 class="step-title">{step.title}</h3>
 				<p class="step-body">{step.body}</p>
