@@ -23,16 +23,23 @@ function normalized(text: string): string {
 
 /** true when `notes` is mostly a copy of `summary` (a degenerate output). */
 function isNearDuplicate(summary: string, notes: string): boolean {
-	const a = normalized(summary);
-	const b = normalized(notes);
-	if (a.length === 0 || b.length === 0) return false;
-	// Check containment in the longer text only. The older version always
-	// compared `b.includes(shorter)` — when notes were shorter than the
-	// summary that read `notes.includes(notes)` and flagged every such
-	// artifact as a duplicate, even unrelated content.
-	const longer = a.length >= b.length ? a : b;
-	const shorter = a.length <= b.length ? a : b;
-	return longer.includes(shorter) && shorter.length / longer.length > 0.6;
+	const aWords = normalized(summary).split(' ');
+	const bWords = normalized(notes).split(' ');
+	if (aWords.length === 0 || bWords.length === 0) return false;
+	
+	const longer = aWords.length >= bWords.length ? aWords : bWords;
+	const shorter = aWords.length <= bWords.length ? aWords : bWords;
+	
+	const longerSet = new Set(longer);
+	let overlap = 0;
+	
+	for (const word of shorter) {
+		if (longerSet.has(word)) {
+			overlap++;
+		}
+	}
+	
+	return overlap / shorter.length > 0.8;
 }
 
 /** Validate a finished artifact set; returns an issue string or null when good. */
