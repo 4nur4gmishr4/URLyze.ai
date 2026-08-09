@@ -68,6 +68,26 @@ button {
 	border-radius: var(--radius-xs);
 }
 
+/* Skip link: visually hidden until keyboard-focused, then pinned top-left. */
+.skip-link {
+	position: fixed;
+	top: var(--space-xs);
+	left: var(--space-xs);
+	z-index: 100;
+	padding: var(--space-xs) var(--space-md);
+	border-radius: var(--radius-md);
+	background: var(--accent);
+	color: var(--on-accent);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+	transform: translateY(-200%);
+	transition: transform var(--duration-fast) var(--ease-out);
+}
+.skip-link:focus-visible {
+	transform: translateY(0);
+}
+
 :disabled {
 	cursor: not-allowed;
 }
