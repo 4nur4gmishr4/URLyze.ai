@@ -122,8 +122,6 @@ export function canonicalizeWeb(url: URL): CanonicalIdentity {
 	const normalized = stripTrackingParams(url);
 	normalized.hostname = url.hostname.toLowerCase();
 	normalized.hash = '';
-	// https is canonical; http://example.com and https://example.com are the same site.
-	normalized.protocol = 'https:';
 	if (normalized.pathname.length > 1 && normalized.pathname.endsWith('/')) {
 		normalized.pathname = normalized.pathname.replace(/\/+$/, '');
 	}
