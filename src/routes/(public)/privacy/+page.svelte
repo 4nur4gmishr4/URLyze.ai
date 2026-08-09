@@ -10,7 +10,7 @@
 		<h2>What we store</h2>
 		<p>
 			When you analyze a link, we keep the URL you submitted, the text we extracted from it,
-			and the three artifacts Gemini produced. This is what powers your history — so the next
+			and the three artifacts Gemini produced. This is what powers your history, so the next
 			time you open the same link, we can show the saved result instantly instead of re-reading.
 		</p>
 	</section>
