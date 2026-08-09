@@ -23,23 +23,20 @@ function normalized(text: string): string {
 
 /** true when `notes` is mostly a copy of `summary` (a degenerate output). */
 function isNearDuplicate(summary: string, notes: string): boolean {
-	const aWords = normalized(summary).split(' ');
-	const bWords = normalized(notes).split(' ');
-	if (aWords.length === 0 || bWords.length === 0) return false;
+	const aWords = new Set(normalized(summary).split(' ').filter(w => w.length > 3));
+	const bWords = new Set(normalized(notes).split(' ').filter(w => w.length > 3));
 	
-	const longer = aWords.length >= bWords.length ? aWords : bWords;
-	const shorter = aWords.length <= bWords.length ? aWords : bWords;
+	if (aWords.size === 0 || bWords.size === 0) return false;
 	
-	const longerSet = new Set(longer);
-	let overlap = 0;
-	
-	for (const word of shorter) {
-		if (longerSet.has(word)) {
-			overlap++;
-		}
+	let intersection = 0;
+	for (const word of aWords) {
+		if (bWords.has(word)) intersection++;
 	}
 	
-	return overlap / shorter.length > 0.8;
+	const union = aWords.size + bWords.size - intersection;
+	const jaccard = intersection / union;
+	
+	return jaccard > 0.8;
 }
 
 /** Validate a finished artifact set; returns an issue string or null when good. */
