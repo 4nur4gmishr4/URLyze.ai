@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import { sourceTypeSchema } from '$lib/types/analysis';
 import { ensureSessionId } from '$lib/server/session';
-import { listAnalyses } from '$lib/server/db/analyses';
+import { deleteAllAnalyses, listAnalyses } from '$lib/server/db/analyses';
 import { AppError } from '$lib/types/errors';
 
 /**
@@ -25,6 +25,23 @@ export async function GET(event) {
 
 		const result = await listAnalyses(ownerId, { search, sourceType, sort, limit, offset });
 		return json(result);
+	} catch (e) {
+		if (e instanceof AppError) throw error(e.status, { code: e.code, message: e.message });
+		throw e;
+	}
+}
+
+/**
+ * DELETE /api/analyses
+ *
+ * Clear this visitor's entire history (settings). Ownership-scoped by the
+ * session cookie, so it only ever removes rows tied to this browser.
+ */
+export async function DELETE(event) {
+	try {
+		const ownerId = ensureSessionId(event);
+		const deleted = await deleteAllAnalyses(ownerId);
+		return json({ ok: true, deleted });
 	} catch (e) {
 		if (e instanceof AppError) throw error(e.status, { code: e.code, message: e.message });
 		throw e;
