@@ -36,5 +36,26 @@ export const analyses = pgTable('analyses', {
 	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
 });
 
+/**
+ * A signed-in user (currently only via Google OAuth).
+ *
+ * `google_sub` is the stable Google subject id and the unique key we upsert
+ * on; `email` is unique so one account can't silently split across devices.
+ * Analyses written while signed in are owned by `user:<id>` (see
+ * `ownerIdForUser`), which is what gives the account cross-device history.
+ */
+export const users = pgTable('users', {
+	id: uuid('id').primaryKey().defaultRandom(),
+	googleSub: varchar('google_sub', { length: 64 }).notNull().unique(),
+	email: varchar('email', { length: 320 }).notNull().unique(),
+	name: varchar('name', { length: 120 }).notNull(),
+	picture: varchar('picture', { length: 2048 }),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+});
+
+export type UserRow = typeof users.$inferSelect;
+export type NewUserRow = typeof users.$inferInsert;
+
 export type AnalysisRow = typeof analyses.$inferSelect;
 export type NewAnalysisRow = typeof analyses.$inferInsert;
