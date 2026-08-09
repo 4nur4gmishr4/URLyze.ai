@@ -12,7 +12,7 @@
 		},
 		{
 			title: 'Plain text out',
-			body: 'Your downloads are ordinary .txt, .md, and .pptx — yours to keep forever.'
+			body: 'Your downloads are ordinary .txt, .md, and .pptx files, yours to keep forever.'
 		}
 	];
 </script>
