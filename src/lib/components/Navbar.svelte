@@ -37,11 +37,7 @@
 		return () => window.removeEventListener('keydown', onKey);
 	});
 
-	const links = [
-		{ href: '/#how', label: 'How it works' },
-		{ href: '/#trust', label: 'Why URLyze' },
-		{ href: '/history', label: 'History' }
-	];
+	const links: { href: string; label: string }[] = [];
 </script>
 
 <header
