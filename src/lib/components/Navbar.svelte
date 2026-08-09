@@ -1,15 +1,20 @@
 <script lang="ts">
 	import Logo from './Logo.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
+	import AccountMenu from './AccountMenu.svelte';
+	import type { SessionUser } from '$lib/types/session';
 
 	/**
-	 * Site header: animated logo, page links, theme toggle, and the analyze CTA.
-	 * Sticky in every viewport so it stays visible while scrolling. On mobile the
-	 * links collapse into a hamburger panel; transparent mode (hero) gains a solid
-	 * background the moment the page scrolls.
+	 * Site header: animated logo, page links, theme toggle, account, and the
+	 * analyze CTA. Sticky in every viewport so it stays visible while scrolling.
+	 * On mobile the links collapse into a hamburger panel; transparent mode (hero)
+	 * gains a solid background the moment the page scrolls.
 	 */
 
-	let { transparent = false }: { transparent?: boolean } = $props();
+	let {
+		transparent = false,
+		user
+	}: { transparent?: boolean; user: SessionUser | null } = $props();
 
 	let menuOpen = $state(false);
 	let scrolled = $state(false);
@@ -50,6 +55,7 @@
 
 	<div class="navbar-actions">
 		<ThemeToggle />
+		<div class="account-desktop"><AccountMenu {user} /></div>
 		<a href="/dashboard" class="btn btn-primary navbar-cta">Analyze a link</a>
 		<button
 			type="button"
@@ -70,6 +76,7 @@
 			{#each links as link (link.href)}
 				<a href={link.href} onclick={() => (menuOpen = false)}>{link.label}</a>
 			{/each}
+			<div class="account-mobile"><AccountMenu {user} /></div>
 			<a href="/dashboard" class="btn btn-primary mobile-cta" onclick={() => (menuOpen = false)}>
 				Analyze a link
 			</a>
@@ -134,6 +141,9 @@
 		align-items: center;
 		gap: var(--space-sm);
 	}
+	.account-desktop {
+		display: none;
+	}
 	.navbar-cta {
 		display: none;
 	}
@@ -195,6 +205,9 @@
 		.nav-links {
 			display: flex;
 		}
+		.account-desktop {
+			display: block;
+		}
 		.navbar-cta {
 			display: inline-flex;
 		}
@@ -203,6 +216,13 @@
 		}
 		.mobile-menu {
 			display: none;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.account-mobile {
+			padding: var(--space-sm) 0;
+			border-top: 1px solid var(--border-soft);
 		}
 	}
 
