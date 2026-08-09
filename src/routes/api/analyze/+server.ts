@@ -38,7 +38,7 @@ export async function POST(event) {
 	try {
 		const parsed = analyzeRequestSchema.safeParse(await event.request.json().catch(() => null));
 		if (!parsed.success) {
-			throw new AppError('VALIDATION', 'Invalid request — a URL is required');
+			throw new AppError('VALIDATION', 'Invalid request: a URL is required');
 		}
 
 		await enforceRateLimit(event.request);
@@ -72,7 +72,7 @@ export async function POST(event) {
 		if (!generated) {
 			throw new AppError(
 				'AI_UNAVAILABLE',
-				'The AI service is unavailable right now — please try again shortly'
+				'The AI service is unavailable right now, please try again shortly'
 			);
 		}
 
