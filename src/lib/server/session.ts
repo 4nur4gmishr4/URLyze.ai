@@ -1,59 +1,38 @@
-import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import type { RequestEvent } from '@sveltejs/kit';
-import { env } from './env';
 import { log } from './logging';
+import { sign, verify } from './auth/hmac';
+import { readUserSessionId, ownerIdForUser } from './auth/user-session';
 
 /**
- * Anonymous ownership.
+ * Ownership scoping.
  *
- * No auth, no accounts — each visitor gets an HMAC-signed session cookie whose
- * value is an opaque id that scopes every analysis row. The signature prevents
- * forging someone else's id; the id itself is a random UUID, never guessable.
+ * Every analysis row is scoped to an opaque owner id. Visitors without an
+ * account get an HMAC-signed anonymous cookie; signed-in users get the stable
+ * `user:<id>` scope so their history follows them across devices. The
+ * signature prevents forging someone else's id; the id itself is a random
+ * UUID, never guessable.
  *
  * Security properties:
- *  - The cookie is `HttpOnly` (JS can't read it), `SameSite=Lax` (no cross-site
- *    sends), and scoped to the API path so it isn't sent on every asset request.
- *  - Sessions never persist server-side, so there is no store to leak or purge.
+ *  - The anonymous cookie is `HttpOnly` (JS can't read it), `SameSite=Lax` (no
+ *    cross-site sends), and scoped to the API path so it isn't sent on every
+ *    asset request.
+ *  - The user session cookie is signed the same way and readable on all pages
+ *    so the header can show who is signed in.
  */
 
 export const SESSION_COOKIE = 'urlyze_sid';
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 365; // 1 year, sliding-renewed on use
 const COOKIE_PATH = '/api';
 
-function secret(): string {
-	if (env.SESSION_SECRET) return env.SESSION_SECRET;
-	// Dev fallback: ephemeral per-process secret so local runs work without
-	// config. All sessions reset on restart — acceptable for local only.
-	if (process.env.NODE_ENV !== 'production') return devSecret;
-	throw new Error('SESSION_SECRET is required in production');
-}
-
-const devSecret = randomUUID();
-
-/** `id.signature` — signature is HMAC over the id, preventing tampering. */
-function sign(id: string): string {
-	return `${id}.${createHmac('sha256', secret()).update(id).digest('base64url')}`;
-}
-
-/** Returns the id when the cookie is present and its signature is valid. */
-function verify(raw: string): string | null {
-	const dot = raw.lastIndexOf('.');
-	if (dot <= 0) return null;
-	const id = raw.slice(0, dot);
-	const sig = raw.slice(dot + 1);
-	const expected = createHmac('sha256', secret()).update(id).digest('base64url');
-	// Constant-time compare to avoid leaking the signature via timing.
-	if (sig.length !== expected.length || !timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
-		return null;
-	}
-	return id;
-}
-
 /**
- * Get the visitor's existing session id, or create one (writing the cookie
- * when created). Call at the top of every ownership-scoped API handler.
+ * Get the owner id for this request. Prefers a signed-in account; otherwise
+ * returns (and creates on first visit) the anonymous session id.
  */
 export function ensureSessionId(event: RequestEvent): string {
+	const userId = readUserSessionId(event.cookies);
+	if (userId) return ownerIdForUser(userId);
+
 	const existing = event.cookies.get(SESSION_COOKIE);
 	if (existing) {
 		const id = verify(existing);
