@@ -44,7 +44,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 	} catch {
 		throw new ApiError(0, {
 			code: 'NETWORK_ERROR',
-			message: 'Could not reach the server — check your connection and try again'
+			message: 'Could not reach the server. Check your connection and try again'
 		});
 	}
 
