@@ -39,7 +39,11 @@
 
 <div bind:this={root} class="hero" data-hero-root>
 	<span class="kicker" data-hero>One link in, three documents out.</span>
-	<h1 class="headline" data-hero>
+	<h1
+		class="headline"
+		data-hero
+		aria-label="Turn any link into an executive sketch, study notes, or a slide outline."
+	>
 		Turn any link into
 		<br />
 		<span class="typewrap"><Typewriter words={['an executive sketch.', 'study notes.', 'a slide outline.']} /></span>
