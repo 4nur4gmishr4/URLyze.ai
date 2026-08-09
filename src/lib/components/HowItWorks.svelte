@@ -15,7 +15,7 @@
 		{
 			num: '3',
 			title: 'Get three artifacts',
-			body: 'An executive sketch, study notes, and a slide outline — downloadable in seconds.'
+			body: 'An executive sketch, study notes, and a slide outline, downloadable in seconds.'
 		}
 	];
 </script>
