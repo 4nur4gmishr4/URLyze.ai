@@ -28,11 +28,19 @@
 		return () => window.removeEventListener('scroll', onScroll);
 	});
 
+	$effect(() => {
+		if (!menuOpen) return;
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') menuOpen = false;
+		};
+		window.addEventListener('keydown', onKey);
+		return () => window.removeEventListener('keydown', onKey);
+	});
+
 	const links = [
 		{ href: '/#how', label: 'How it works' },
 		{ href: '/#trust', label: 'Why URLyze' },
-		{ href: '/history', label: 'History' },
-		{ href: '/privacy', label: 'Privacy' }
+		{ href: '/history', label: 'History' }
 	];
 </script>
 
