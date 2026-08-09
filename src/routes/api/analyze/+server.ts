@@ -41,7 +41,7 @@ export async function POST(event) {
 			throw new AppError('VALIDATION', 'Invalid request: a URL is required');
 		}
 
-		await enforceRateLimit(event.request);
+		await enforceRateLimit(event);
 
 		const ownerId = ensureSessionId(event);
 

@@ -40,21 +40,20 @@ function buildLimiter(): RateLimiter {
 	};
 }
 
-/** Client IP → limiter key; missing IP falls back to a shared bucket. */
-export function ipKey(request: Request): string {
-	const forwarded = request.headers.get('x-forwarded-for');
-	if (forwarded) {
-		const first = forwarded.split(',')[0].trim();
-		if (first) return first;
+import type { RequestEvent } from '@sveltejs/kit';
+
+/** Client IP → limiter key; securely provided by SvelteKit adapter. */
+export function ipKey(event: RequestEvent): string {
+	try {
+		return event.getClientAddress();
+	} catch {
+		return 'unknown-ip';
 	}
-	const cf = request.headers.get('cf-connecting-ip');
-	if (cf) return cf;
-	return 'unknown-ip';
 }
 
 /** Enforce the limit, throwing RATE_LIMITED when exhausted. */
-export async function enforceRateLimit(request: Request): Promise<void> {
-	const result = await rateLimiter.limit(ipKey(request));
+export async function enforceRateLimit(event: RequestEvent): Promise<void> {
+	const result = await rateLimiter.limit(ipKey(event));
 	if (!result.success) {
 		throw new AppError('RATE_LIMITED', 'Too many requests. Please try again later');
 	}
