@@ -106,11 +106,33 @@ function buildResult(res: Response, maxBytes: number): FetchResult {
 }
 
 async function readCapped(res: Response, maxBytes: number): Promise<ArrayBuffer> {
-	const buf = await res.arrayBuffer();
-	if (buf.byteLength > maxBytes) {
-		throw new AppError('CONTENT_TOO_LARGE', 'The source page is too large to analyze');
+	if (!res.body) {
+		return new ArrayBuffer(0);
 	}
-	return buf;
+	const reader = res.body.getReader();
+	let byteLength = 0;
+	const chunks: Uint8Array[] = [];
+
+	while (true) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		if (value) {
+			byteLength += value.byteLength;
+			if (byteLength > maxBytes) {
+				reader.cancel();
+				throw new AppError('CONTENT_TOO_LARGE', 'The source page is too large to analyze');
+			}
+			chunks.push(value);
+		}
+	}
+
+	const buf = new Uint8Array(byteLength);
+	let offset = 0;
+	for (const chunk of chunks) {
+		buf.set(chunk, offset);
+		offset += chunk.byteLength;
+	}
+	return buf.buffer;
 }
 
 /** Parse a raw URL, rejecting anything that isn't http(s). */
