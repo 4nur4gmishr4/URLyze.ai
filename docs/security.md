@@ -51,6 +51,29 @@ user-supplied image — the vulnerable parsers can't be reached. The one
 server-side flag (undici via `youtubei.js`) is fixed by pinning `youtubei.js`
 to a patched release. Re-check `npm audit` before each release.
 
+## Sign-in (Google OAuth)
+
+Hand-rolled Authorization Code + PKCE, no auth library. The client secret never
+reaches the browser; identity comes from the **id_token**, verified against
+Google's published JWKS before a single claim is trusted.
+
+- **PKCE (S256)** binds the code exchange to this login attempt.
+- **`state`** (CSRF) and **`nonce`** (binds the id_token to the attempt) are
+  parked in a single **HMAC-signed, one-shot, HttpOnly** cookie
+  (`urlyze_oauth`, path `/api/auth`, 10 min TTL). The callback consumes and
+  deletes it immediately, so a stolen value can't be replayed.
+- **id_token verification** (`auth/google.ts`): signature via `jose` JWKS,
+  issuer `accounts.google.com`, audience = our client id, nonce equality,
+  `email_verified === true`, non-empty `sub`/`email`. Any failure → `AUTH_GOOGLE_INVALID`.
+- **Sign-out is POST-only** to prevent CSRF logout.
+- **User session** is a separate signed HttpOnly cookie (`urlyze_user`, path `/`,
+  30 days) holding only the user UUID; the DB is touched only to hydrate the UI.
+  Signed-in analyses are scoped `user:<id>`, which is what gives accounts
+  cross-device history.
+- **Config is optional**: without `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`
+  (both-or-neither, enforced by the env schema) the start route returns 503, so
+  local dev and builds work with sign-in simply off.
+
 ## Error handling
 
 `AppError(code, message, detail?)` maps each code to an HTTP status
