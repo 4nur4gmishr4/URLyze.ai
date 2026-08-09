@@ -125,10 +125,10 @@
 		border: 1px solid var(--border-strong);
 	}
 	.swatch-light {
-		background: #fff8e0;
+		background: var(--swatch-light);
 	}
 	.swatch-dark {
-		background: #17120e;
+		background: var(--swatch-dark);
 	}
 	.success {
 		margin: 0;
