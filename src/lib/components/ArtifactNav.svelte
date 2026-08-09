@@ -45,6 +45,7 @@
 			id={`artifact-${tab.key}`}
 			aria-selected={active === tab.key}
 			aria-controls="artifact-panel"
+			tabindex={active === tab.key ? 0 : -1}
 			class:active={active === tab.key}
 			class="tab"
 			onclick={() => onchange(tab.key)}
