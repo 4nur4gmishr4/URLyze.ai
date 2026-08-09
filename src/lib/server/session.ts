@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { dev } from '$app/environment';
 import type { RequestEvent } from '@sveltejs/kit';
 import { log } from './logging';
 import { sign, verify } from './auth/hmac';
@@ -48,7 +49,7 @@ export function ensureSessionId(event: RequestEvent): string {
 		path: COOKIE_PATH,
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: true,
+		secure: !dev,
 		maxAge: SESSION_MAX_AGE
 	});
 	return id;
@@ -60,7 +61,7 @@ function renewCookie(event: RequestEvent, id: string): void {
 		path: COOKIE_PATH,
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: true,
+		secure: !dev,
 		maxAge: SESSION_MAX_AGE
 	});
 }

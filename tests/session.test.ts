@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { dev } from '$app/environment';
 
 const envMock = vi.hoisted(() => ({
 	SESSION_SECRET: 'a-fixed-32+char-session-secret-for-tests'
@@ -48,7 +49,7 @@ describe('session', () => {
 		expect(value).toMatch(/^[0-9a-f-]{36}\.[A-Za-z0-9_-]+$/); // id.signature
 		expect(opts.httpOnly).toBe(true);
 		expect(opts.sameSite).toBe('lax');
-		expect(opts.secure).toBe(true);
+		expect(opts.secure).toBe(!dev);
 		expect(opts.maxAge).toBe(SESSION_MAX_AGE);
 	});
 

@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { dev } from '$app/environment';
 import type { Cookies } from '@sveltejs/kit';
 
 const envMock = vi.hoisted(() => ({
@@ -57,7 +58,7 @@ describe('user-session', () => {
 		expect(cookies.set.mock.calls[0][2]).toMatchObject({
 			httpOnly: true,
 			sameSite: 'lax',
-			secure: true,
+			secure: !dev,
 			maxAge: USER_SESSION_MAX_AGE,
 			path: '/'
 		});

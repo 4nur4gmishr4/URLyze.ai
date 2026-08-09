@@ -1,4 +1,5 @@
 import type { Cookies } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 import type { SessionUser } from '$lib/types/session';
 import { sign, verify } from './hmac';
 
@@ -41,7 +42,7 @@ export function setUserSession(cookies: Cookies, userId: string): void {
 		path: COOKIE_PATH,
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: true,
+		secure: !dev,
 		maxAge: USER_SESSION_MAX_AGE
 	});
 }
