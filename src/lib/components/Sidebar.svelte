@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import ThemeToggle from './ThemeToggle.svelte';
+	import AccountMenu from './AccountMenu.svelte';
+	import type { SessionUser } from '$lib/types/session';
 
 	/** App navigation. Collapses to a top bar on small screens. */
+
+	let { user }: { user: SessionUser | null } = $props();
 	const links = [
 		{ href: '/dashboard', label: 'Dashboard', icon: 'spark' },
 		{ href: '/history', label: 'History', icon: 'clock' },
@@ -38,6 +42,7 @@
 	</nav>
 
 	<div class="sidebar-footer">
+		<div class="account"><AccountMenu {user} /></div>
 		<ThemeToggle />
 	</div>
 </aside>
@@ -103,7 +108,12 @@
 	.sidebar-footer {
 		margin-top: auto;
 		display: flex;
-		justify-content: center;
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--space-md);
+	}
+	.account {
+		width: 100%;
 	}
 
 	@media (max-width: 768px) {
@@ -128,6 +138,9 @@
 		}
 		.sidebar-footer {
 			margin-top: 0;
+		}
+		.account {
+			display: none;
 		}
 		.brand-name {
 			display: none;
