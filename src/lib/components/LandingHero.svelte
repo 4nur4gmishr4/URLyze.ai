@@ -84,20 +84,26 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 		text-align: center;
 		gap: var(--space-md);
-		padding: var(--space-xxl) var(--space-md) var(--space-xl);
-		max-width: 720px;
-		margin: 0 auto;
+		padding: var(--space-xxl) var(--space-md);
+		min-height: 100vh;
+		min-height: calc(100svh - 69px);
+		overflow: hidden;
 	}
 	.hero::before {
 		content: '';
 		position: absolute;
-		inset: -40px;
+		inset: 0;
 		pointer-events: none;
 		opacity: 0.06;
 		background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 		background-size: 128px 128px;
+		/* Grain covers the full screen and fades out at the bottom, just
+		   above the How it works section. */
+		-webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+		mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
 	}
 	.kicker {
 		font-size: 13px;
