@@ -154,7 +154,7 @@
 				{#if analysisId}
 					Loading saved analysis…
 				{:else}
-					Analyzing <span class="progress-url">{submittedUrl}</span> — this can take up to a minute.
+					Analyzing <span class="progress-url">{submittedUrl}</span>. This can take up to a minute.
 				{/if}
 			</p>
 		</section>
