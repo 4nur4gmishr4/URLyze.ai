@@ -97,3 +97,8 @@ export function getAnalysis(id: string, signal?: AbortSignal): Promise<AnalysisR
 export function deleteAnalysis(id: string): Promise<{ ok: true }> {
 	return request<{ ok: true }>(`/api/analyses/${id}`, { method: 'DELETE' });
 }
+
+/** DELETE /api/analyses — clear the visitor's entire history. */
+export function clearAllAnalyses(): Promise<{ ok: true; deleted: number }> {
+	return request<{ ok: true; deleted: number }>('/api/analyses', { method: 'DELETE' });
+}
