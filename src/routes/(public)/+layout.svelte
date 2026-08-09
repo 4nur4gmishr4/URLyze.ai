@@ -9,7 +9,7 @@
 
 <div class="site">
 	<Navbar user={data.user} />
-	<main class="main">{@render children()}</main>
+	<main id="main-content" class="main">{@render children()}</main>
 	<Footer />
 </div>
 
