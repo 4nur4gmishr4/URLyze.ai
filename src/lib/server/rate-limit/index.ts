@@ -56,6 +56,6 @@ export function ipKey(request: Request): string {
 export async function enforceRateLimit(request: Request): Promise<void> {
 	const result = await rateLimiter.limit(ipKey(request));
 	if (!result.success) {
-		throw new AppError('RATE_LIMITED', 'Too many requests — please try again later');
+		throw new AppError('RATE_LIMITED', 'Too many requests. Please try again later');
 	}
 }
