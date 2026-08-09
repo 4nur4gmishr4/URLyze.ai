@@ -22,7 +22,12 @@ export const envSchema = z
 		SESSION_SECRET: z
 			.string()
 			.min(32, 'SESSION_SECRET must be at least 32 characters')
-			.optional()
+			.optional(),
+		// Google OAuth. Both halves of the pair are optional together; if only
+		// one is set the refine below fails fast instead of half-configuring.
+		GOOGLE_CLIENT_ID: z.string().optional(),
+		GOOGLE_CLIENT_SECRET: z.string().optional(),
+		GOOGLE_REDIRECT_URI: z.string().url('GOOGLE_REDIRECT_URI must be a URL').optional()
 	})
 	.superRefine((val, ctx) => {
 		if (val.RATE_LIMITER === 'upstash') {
@@ -40,6 +45,13 @@ export const envSchema = z
 					message: 'UPSTASH_REDIS_REST_TOKEN is required when RATE_LIMITER=upstash'
 				});
 			}
+		}
+		if (Boolean(val.GOOGLE_CLIENT_ID) !== Boolean(val.GOOGLE_CLIENT_SECRET)) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				path: ['GOOGLE_CLIENT_ID'],
+				message: 'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set together'
+			});
 		}
 	});
 
