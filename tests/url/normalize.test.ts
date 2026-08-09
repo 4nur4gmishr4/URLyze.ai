@@ -75,9 +75,9 @@ describe('url normalize', () => {
 			expect(out.url).toBe('https://example.com/article?a=1&id=42');
 		});
 
-		it('lowercases hostname, drops hash and trailing slash, forces https', () => {
+		it('lowercases hostname, drops hash and trailing slash, preserves http', () => {
 			const out = canonicalizeWeb(new URL('http://EXAMPLE.com/Article/?x=1#frag'));
-			expect(out.url).toBe('https://example.com/Article?x=1');
+			expect(out.url).toBe('http://example.com/Article?x=1');
 		});
 
 		it('collapses empty query to none', () => {
