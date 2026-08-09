@@ -1,12 +1,14 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+	import type { LayoutData } from './$types';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 
-	let { children } = $props();
+	let { data, children }: { data: LayoutData; children: Snippet } = $props();
 </script>
 
 <div class="site">
-	<Navbar />
+	<Navbar user={data.user} />
 	<main class="main">{@render children()}</main>
 	<Footer />
 </div>
