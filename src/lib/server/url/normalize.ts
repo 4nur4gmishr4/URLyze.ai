@@ -127,8 +127,10 @@ export function canonicalizeWeb(url: URL): CanonicalIdentity {
 	if (normalized.pathname.length > 1 && normalized.pathname.endsWith('/')) {
 		normalized.pathname = normalized.pathname.replace(/\/+$/, '');
 	}
-	// Collapse empty query into no query.
-	if (normalized.search === '?') normalized.search = '';
+	// Collapse an empty query (including a bare '?') into no query. The URL
+	// serializer re-adds '?' after the protocol rewrite above, so clear it
+	// through `.search` even when `.search` already reads ''.
+	if (normalized.searchParams.size === 0) normalized.search = '';
 	const href = normalized.href;
 	return { canonical: `WEB:${href}`, url: href };
 }
