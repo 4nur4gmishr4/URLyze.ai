@@ -26,8 +26,13 @@ function isNearDuplicate(summary: string, notes: string): boolean {
 	const a = normalized(summary);
 	const b = normalized(notes);
 	if (a.length === 0 || b.length === 0) return false;
+	// Check containment in the longer text only. The older version always
+	// compared `b.includes(shorter)` — when notes were shorter than the
+	// summary that read `notes.includes(notes)` and flagged every such
+	// artifact as a duplicate, even unrelated content.
+	const longer = a.length >= b.length ? a : b;
 	const shorter = a.length <= b.length ? a : b;
-	return b.includes(shorter) && shorter.length / b.length > 0.6;
+	return longer.includes(shorter) && shorter.length / longer.length > 0.6;
 }
 
 /** Validate a finished artifact set; returns an issue string or null when good. */
