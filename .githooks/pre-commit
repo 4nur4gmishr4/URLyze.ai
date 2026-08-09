@@ -1,0 +1,20 @@
+#!/bin/sh
+# Blocks staging of hardcoded Gemini API keys (AIza...). This is the class of
+# leak the v1 app suffered — a key committed to git and left there. The scan
+# reads the STAGED diff, so a secret can't sneak in through `git add -f .env`.
+#
+# Install with:  git config core.hooksPath .githooks
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$STAGED" ]; then
+	exit 0
+fi
+
+if git diff --cached --diff-filter=ACM | grep -nE 'AIza[0-9A-Za-z_-]{20,}' >/dev/null 2>&1; then
+	echo "pre-commit: BLOCKED — a Gemini API key (AIza...) is staged." >&2
+	echo "Never commit key material. Rotate the key if it ever left your machine." >&2
+	exit 1
+fi
+
+exit 0
