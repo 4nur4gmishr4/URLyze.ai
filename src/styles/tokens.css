@@ -1,0 +1,201 @@
+/* ============================================================
+   URLyze design tokens — derived from DESIGN.md (mistral.ai)
+   Semantic custom properties. Components NEVER use raw hex.
+   Light values follow DESIGN.md verbatim; dark values are an
+   authored counterpart (the brand has not published a dark set).
+   ============================================================ */
+
+:root,
+:root[data-theme='light'] {
+	/* Brand & accent (sunset palette) */
+	--primary: #fa520f;
+	--primary-deep: #cc3a05;
+	--on-primary: #ffffff;
+	--sunshine-300: #ffd06a;
+	--sunshine-500: #ffb83e;
+	--sunshine-700: #ffa110;
+	--sunshine-800: #ff8105;
+	--sunshine-900: #ff8a00;
+	--yellow-saturated: #ffd900;
+
+	/* Warm neutral surfaces */
+	--cream: #fff8e0;
+	--cream-soft: #fffaeb;
+	--cream-deeper: #fff0c2;
+	--beige-deep: #e6d5a8;
+
+	/* Ink & text */
+	--ink: #1f1f1f;
+	--ink-tint: #3d3d3d;
+	--charcoal: #2c2c2c;
+	--slate: #4a4a4a;
+	--steel: #6a6a6a;
+	--stone: #8a8a8a;
+	--muted: #a8a8a8;
+
+	/* Lines & hairlines */
+	--hairline: #e5e5e5;
+	--hairline-soft: #ededed;
+	--hairline-strong: #c7c7c7;
+
+	/* Surfaces */
+	--canvas: #ffffff;
+	--surface: #fafafa;
+	--surface-code: #1c1c1e;
+	--on-dark: #ffffff;
+	--on-dark-muted: #a8a8a8;
+
+	/* ---- Semantic layer ---- */
+	--bg: var(--canvas);
+	--surface-1: var(--canvas);
+	--surface-2: var(--surface);
+	--surface-accent: var(--cream);
+	--surface-accent-soft: var(--cream-soft);
+	--text: var(--ink);
+	--text-secondary: var(--steel);
+	--text-muted: var(--stone);
+	--text-faint: var(--muted);
+	--text-on-accent: var(--on-primary);
+	--text-on-dark: var(--on-dark);
+	--border: var(--hairline);
+	--border-soft: var(--hairline-soft);
+	--border-strong: var(--hairline-strong);
+	--border-accent: var(--beige-deep);
+	--accent: var(--primary);
+	--accent-hover: var(--primary-deep);
+	--accent-soft: var(--cream-deeper);
+	--link: var(--primary);
+	--focus-ring: var(--primary);
+	--selection-bg: var(--sunshine-300);
+
+	/* Sunset signature gradient */
+	--sunset-gradient: linear-gradient(
+		90deg,
+		var(--primary) 0%,
+		var(--sunshine-700) 30%,
+		var(--sunshine-500) 55%,
+		var(--yellow-saturated) 80%,
+		var(--cream) 100%
+	);
+	--hero-gradient: linear-gradient(
+		135deg,
+		var(--sunshine-700) 0%,
+		var(--sunshine-900) 60%,
+		var(--primary) 100%
+	);
+
+	/* Elevation (subtle, editorial) */
+	--shadow-1: rgba(0, 0, 0, 0.04) 0px 1px 2px 0px;
+	--shadow-2: rgba(0, 0, 0, 0.04) 0px 4px 12px 0px;
+	--shadow-3: rgba(0, 0, 0, 0.08) 0px 12px 24px -4px;
+	--shadow-4: rgba(0, 0, 0, 0.12) 0px 16px 48px -8px;
+
+	/* Typography */
+	/* PP Editorial Old (DESIGN.md) is commercial — Fraunces is the closest
+	   free serif and fills in until the licensed file is bundled. */
+	--font-display: 'PP Editorial Old', 'Fraunces', Georgia, 'Times New Roman', serif;
+	--font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+	--font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+	/* Radius (sober, editorial) */
+	--radius-xs: 4px;
+	--radius-sm: 6px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+	--radius-xl: 16px;
+	--radius-xxl: 20px;
+	--radius-full: 9999px;
+
+	/* Spacing (4px base) */
+	--space-xxs: 4px;
+	--space-xs: 8px;
+	--space-sm: 12px;
+	--space-md: 16px;
+	--space-lg: 20px;
+	--space-xl: 24px;
+	--space-xxl: 32px;
+	--space-xxxl: 40px;
+	--space-section-sm: 48px;
+	--space-section: 64px;
+	--space-section-lg: 96px;
+	--space-hero: 120px;
+
+	/* Motion */
+	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+	--duration-fast: 150ms;
+	--duration-base: 200ms;
+	--duration-slow: 350ms;
+
+	color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+	/* Brand & accent — kept, slightly brightened for dark contrast */
+	--primary: #ff6a2b;
+	--primary-deep: #fa520f;
+	--on-primary: #ffffff;
+	--sunshine-300: #ffd06a;
+	--sunshine-500: #ffb83e;
+	--sunshine-700: #ffa110;
+	--sunshine-800: #ff8105;
+	--sunshine-900: #ff8a00;
+	--yellow-saturated: #ffd900;
+
+	/* Warm neutral surfaces (dark) */
+	--cream: #1f1b15;
+	--cream-soft: #262118;
+	--cream-deeper: #2c2519;
+	--beige-deep: #4a3d28;
+
+	/* Ink & text (inverted) */
+	--ink: #f5f2ea;
+	--ink-tint: #e6e0d4;
+	--charcoal: #d8d2c6;
+	--slate: #b8b2a6;
+	--steel: #a29b8f;
+	--stone: #7c766c;
+	--muted: #5d584f;
+
+	/* Lines */
+	--hairline: #2b2b2b;
+	--hairline-soft: #232323;
+	--hairline-strong: #3a3a3a;
+
+	/* Surfaces */
+	--canvas: #121212;
+	--surface: #181818;
+	--surface-code: #0d0d0f;
+	--on-dark: #ffffff;
+	--on-dark-muted: #a8a8a8;
+
+	/* Semantic layer (dark) */
+	--bg: var(--canvas);
+	--surface-1: var(--canvas);
+	--surface-2: var(--surface);
+	--surface-accent: var(--cream);
+	--surface-accent-soft: var(--cream-soft);
+	--text: var(--ink);
+	--text-secondary: var(--steel);
+	--text-muted: var(--stone);
+	--text-faint: var(--muted);
+	--text-on-accent: var(--on-primary);
+	--text-on-dark: var(--on-dark);
+	--border: var(--hairline);
+	--border-soft: var(--hairline-soft);
+	--border-strong: var(--hairline-strong);
+	--border-accent: var(--beige-deep);
+	--accent: var(--primary);
+	--accent-hover: var(--primary-deep);
+	--accent-soft: var(--cream-deeper);
+	--link: var(--primary);
+	--focus-ring: var(--primary);
+	--selection-bg: var(--sunshine-700);
+
+	/* Shadows are lighter on dark (elevation via border instead) */
+	--shadow-1: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px;
+	--shadow-2: rgba(0, 0, 0, 0.35) 0px 4px 12px 0px;
+	--shadow-3: rgba(0, 0, 0, 0.45) 0px 12px 24px -4px;
+	--shadow-4: rgba(0, 0, 0, 0.55) 0px 16px 48px -8px;
+
+	color-scheme: dark;
+}
