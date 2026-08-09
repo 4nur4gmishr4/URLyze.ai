@@ -31,3 +31,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# internal planning docs — kept local, never pushed
+/URLyze AI — 100-100 Production Upgrade Specification.md
