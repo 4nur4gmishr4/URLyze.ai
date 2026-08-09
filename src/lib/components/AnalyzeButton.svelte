@@ -21,7 +21,7 @@
 	aria-label={loading ? 'Analyzing…' : 'Analyze'}
 >
 	{#if loading}
-		<span class="spinner" aria-hidden="true" />
+		<span class="spinner" aria-hidden="true"></span>
 		Analyzing…
 	{:else}
 		Analyze
