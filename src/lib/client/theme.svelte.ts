@@ -5,9 +5,11 @@ import { browser } from '$app/environment';
  *
  * The inline script in `src/app.html` already sets `data-theme` before first
  * paint to prevent FOUC — this store just keeps the UI in sync after
- * hydration and persists the user's choice. `system` resolves to the OS
- * preference but is stored as the concrete value so there is one source of
- * truth for the attribute.
+ * hydration and persists the user's choice.
+ *
+ * A module-level `$state` binding may not be reassigned once exported
+ * (compile error in Svelte 5), so it is held as an object and mutated via
+ * `value`. Components read `theme.value`.
  */
 
 export type Theme = 'light' | 'dark';
@@ -29,11 +31,12 @@ function initialTheme(): Theme {
 	return storedTheme() ?? (browser && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 }
 
-export let theme = $state<Theme>(initialTheme());
+/** Reactive theme store. Mutate `theme.value`; never reassign the binding. */
+export const theme = $state<{ value: Theme }>({ value: initialTheme() });
 
-/** Persist and apply the theme. `theme` is already reactive for the UI. */
+/** Persist and apply the theme. `theme.value` is already reactive for the UI. */
 export function setTheme(next: Theme): void {
-	theme = next;
+	theme.value = next;
 	if (!browser) return;
 	try {
 		localStorage.setItem(STORAGE_KEY, next);
@@ -44,5 +47,5 @@ export function setTheme(next: Theme): void {
 }
 
 export function toggleTheme(): void {
-	setTheme(theme === 'dark' ? 'light' : 'dark');
+	setTheme(theme.value === 'dark' ? 'light' : 'dark');
 }
