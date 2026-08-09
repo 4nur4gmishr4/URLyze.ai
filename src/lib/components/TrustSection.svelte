@@ -1,5 +1,7 @@
 <script lang="ts">
-	/** Trust strip: honest notes about privacy, cost, and safety. */
+	import { scrollReveal } from '$lib/client/scrollReveal';
+
+	/** Trust strip: honest notes about privacy, cost, and safety. Cards reveal on scroll. */
 
 	const points = [
 		{
@@ -17,11 +19,11 @@
 	];
 </script>
 
-<section id="trust" class="trust" aria-labelledby="trust-title">
+<section id="trust" class="trust" aria-labelledby="trust-title" use:scrollReveal={{ stagger: 0.1 }}>
 	<h2 id="trust-title" class="section-title">Made to stay simple</h2>
 	<ul class="points">
 		{#each points as point (point.title)}
-			<li class="point">
+			<li class="point" data-reveal-item>
 				<span class="check" aria-hidden="true">
 					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
 				</span>
