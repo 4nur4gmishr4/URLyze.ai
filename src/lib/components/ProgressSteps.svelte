@@ -15,7 +15,7 @@
 
 	const STEPS: { key: PipelineStep; label: string; sub: string }[] = [
 		{ key: 'extract', label: 'Reading source', sub: 'Pulling the full text' },
-		{ key: 'summarize', label: 'Summarizing', sub: 'Gemini distills the core' },
+		{ key: 'summarize', label: 'Summarizing', sub: 'AI distills the core' },
 		{ key: 'structure', label: 'Structuring', sub: 'Building your three artifacts' },
 		{ key: 'done', label: 'Done', sub: 'Results ready' }
 	];

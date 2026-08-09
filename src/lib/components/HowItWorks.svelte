@@ -12,7 +12,7 @@
 		{
 			num: '2',
 			title: 'We read it',
-			body: 'The full text or transcript is pulled safely and passed to Gemini.'
+			body: 'The full text or transcript is pulled safely and processed by AI.'
 		},
 		{
 			num: '3',

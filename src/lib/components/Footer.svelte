@@ -55,7 +55,7 @@
 
 	<div class="footer-bottom container">
 		<p class="caption">© {year} URLyze. Built for people who read a lot.</p>
-		<p class="caption stack">SvelteKit · Postgres · Gemini</p>
+		<p class="caption stack">SvelteKit · Postgres · AI</p>
 	</div>
 </footer>
 
