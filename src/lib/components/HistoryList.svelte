@@ -57,6 +57,7 @@
 				id="history-search"
 				type="search"
 				placeholder="Search your history…"
+				aria-label="Search history"
 				value={search}
 				oninput={(e) => onsearch((e.currentTarget as HTMLInputElement).value)}
 			/>
@@ -146,7 +147,12 @@
 
 		{#if pages > 1}
 			<nav class="pager" aria-label="History pages">
-				<button class="page-btn" disabled={page <= 1} onclick={() => onpage(0)}>
+				<button
+					class="page-btn"
+					disabled={page <= 1}
+					onclick={() => onpage(0)}
+					aria-label="Previous page"
+				>
 					←
 				</button>
 				<span class="page-info">Page {page} of {pages}</span>
@@ -154,6 +160,7 @@
 					class="page-btn"
 					disabled={page >= pages}
 					onclick={() => onpage(page * limit)}
+					aria-label="Next page"
 				>
 					→
 				</button>
