@@ -8,7 +8,7 @@
 
 <div class="app">
 	<Sidebar user={data.user} />
-	<main class="content">{@render children()}</main>
+	<main id="main-content" class="content">{@render children()}</main>
 </div>
 
 <style>
