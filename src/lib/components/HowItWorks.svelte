@@ -20,7 +20,7 @@
 	];
 </script>
 
-<section class="how" aria-labelledby="how-title">
+<section id="how" class="how" aria-labelledby="how-title">
 	<h2 id="how-title" class="section-title">How it works</h2>
 	<ol class="steps">
 		{#each steps as step, i (step.num)}
