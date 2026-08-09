@@ -11,19 +11,25 @@
 
 	let {
 		result,
-		activeText
+		activeText,
+		type
 	}: {
 		result: AnalysisResult;
 		activeText: string;
+		type: 'summary' | 'notes' | 'slides';
 	} = $props();
 </script>
 
 <div class="action-bar">
 	<CopyButton text={activeText} label="Copy" />
 	<span class="divider" aria-hidden="true"></span>
-	<DownloadButton {result} format="txt" />
-	<DownloadButton {result} format="md" />
-	<DownloadButton {result} format="pptx" />
+	{#if type === 'summary'}
+		<DownloadButton {result} format="txt" />
+	{:else if type === 'notes'}
+		<DownloadButton {result} format="md" />
+	{:else if type === 'slides'}
+		<DownloadButton {result} format="pptx" />
+	{/if}
 </div>
 
 <style>
