@@ -67,9 +67,10 @@ Every analysis produces exactly three artifacts:
 ### 3.3 History
 
 - Every analysis is saved (server-side, in Postgres).
-- The **History page** lists all past analyses (title, source URL, date, type, preview).
+- History is **ownership-scoped** by an anonymous HMAC-signed session cookie — no accounts, but one visitor's history is never another's. The cookie is set server-side (`ensureSessionId`) if absent.
+- The **History page** lists all past analyses (title, source URL, date, type, preview) with search, source-type filter, and sort.
 - Re-opening a past analysis loads its stored artifacts **instantly from the database** — it does **not** re-fetch or re-analyze the URL.
-- The **Settings page** is the hub for app preferences (theme, etc.).
+- The **Settings page** is the hub for theme, plus a clear-history action.
 
 ### 3.4 Theme
 
@@ -80,7 +81,10 @@ Every analysis produces exactly three artifacts:
 
 ## 4. The analysis pipeline (deep dive)
 
-This is the heart of the system. It runs server-side in four stages.
+This is the heart of the system. It runs server-side as a nine-step pipeline:
+validate → rate-limit → session → canonicalize → dedup (canonical URL) →
+SSRF-guard → extract → dedup (content hash) → Gemini → quality gate →
+persist.
 
 ### Stage 1 — URL routing
 
@@ -118,50 +122,52 @@ The server inspects the hostname of the submitted URL:
    }
    ```
 2. **Model fallback chain**: the configured model list is tried in order (e.g. `gemini-2.5-flash` → `gemini-2.0-flash` → …). If one model fails, the next is tried — resilience against a model being temporarily unavailable or rate-limited.
-3. The response is **parsed defensively**: code fences are stripped, the JSON is parsed, and the shape is validated against a zod schema. Partial/edge-case responses degrade gracefully (fields may be returned empty rather than the whole request failing).
+3. The response is **parsed defensively**: code fences are stripped, the JSON is parsed, and the shape is validated against a zod schema. Schema-valid-but-garbage output is caught by a **quality gate** (summary ≥ 40 words, notes ≥ 120 chars, ≥ 1 slide with ≥ 2 points, notes not a near-duplicate of the summary) so the next model in the fallback chain gets a chance.
 
-### Stage 4 — Persistence
+### Stage 4 — Duplicate detection
 
-The result `{ id, title, sourceType, summary, notes, pptContent, createdAt }` is written to the `analyses` table in Postgres (Neon, hosted on Vercel). The dashboard's history and the history page read from this table.
+Two keys are checked, both scoped to the visitor's session:
+
+1. **Canonical URL** — all YouTube URL shapes collapse to a video id and tracking params are stripped, so `watch?v=X` and `youtu.be/X?utm_...` hit the same canonical. A match serves the cached row (`wasDuplicate: true`) — no re-extraction, no Gemini spend.
+2. **Content hash** — a sha-256 of the normalized extracted text. Catches the same content reached via a different link (e.g. an AMP mirror).
+
+### Stage 5 — Persistence
+
+The result `{ id, title, sourceType, summary, notes, pptContent, quality, model, createdAt }` is written to the `analyses` table in Postgres (Neon, hosted on Vercel). The dashboard's history and the history page read from this table.
 
 ---
 
 ## 5. Data model
 
-Single table — `analyses`:
+Single table — `analyses` (Drizzle schema in `src/lib/server/db/schema.ts`):
 
 | Column | Type | Description |
 |---|---|---|
-| `id` | uuid (pk) | Unique analysis id |
-| `originalUrl` | text | The URL the user submitted |
-| `sourceType` | text | `YOUTUBE` or `WEBPAGE` |
+| `id` | uuid (pk) | Unique analysis id, `defaultRandom()` |
+| `owner_id` | varchar(64) | Anonymous session id — every query is scoped by it |
+| `original_url` | text | The URL the user submitted |
+| `canonical_url` | text | `YOUTUBE:<id>` or `WEB:<normalized>` — dup key #1 |
+| `source_type` | enum | `YOUTUBE` or `WEBPAGE` |
 | `title` | text | Derived title of the source |
+| `extraction_label` | text | e.g. "Full transcript" — shown in the EXTRACTION row |
+| `source_metadata` | jsonb | Channel/author/duration/language facts (shape evolves without migrations) |
 | `summary` | text | Executive summary artifact |
 | `notes` | text | Study notes artifact (markdown) |
-| `pptContent` | jsonb | Slide outline artifact `[{ title, points[] }]` |
-| `createdAt` | timestamp | When the analysis ran |
+| `ppt_content` | text | JSON string of `[{ title, points[] }]` |
+| `content_hash` | varchar(64) | sha-256 of normalized text — dup key #2 |
+| `model` / `prompt_version` | varchar | provenance: which model + prompt produced it |
+| `extraction_quality` | enum | `HIGH` / `GOOD` / `LIMITED` — trust indicator |
+| `created_at` / `updated_at` | timestamptz | `defaultNow()` |
 
-There is no user table — this is a public, single-tenant tool.
+There is no user table — identity is an anonymous HMAC-signed session cookie,
+so a visitor's cache and history are structurally isolated from everyone
+else's (`and(eq(ownerId), …)` on every query).
 
 ---
 
 ## 6. Tech stack
 
-### Current (v1 — the original Next.js app, being replaced)
-
-| Layer | Tech |
-|---|---|
-| Frontend | Next.js 15 (App Router), React 19, Tailwind CSS v4, Framer Motion, GSAP |
-| API | tRPC v11 (mutation + query routers) |
-| DB | Prisma ORM + Postgres |
-| Auth | NextAuth v5 beta (scaffolded, not used) |
-| Extraction | axios + cheerio (web), youtubei.js (YouTube) |
-| AI | Google Gemini REST |
-| Files | file-saver, pptxgenjs |
-
-**v1 had real problems that motivated the rewrite:** a hardcoded Gemini API key committed to git, an open server-side fetch of any user-supplied URL (SSRF), no rate limiting on a public endpoint, heavy `any` usage, three competing design systems, a diverged Prisma setup, and history that re-analyzed on every open.
-
-### Target (v2 — the rewrite, in progress)
+### Current
 
 | Layer | Tech | Why |
 |---|---|---|
@@ -249,7 +255,7 @@ Scripts: `dev` · `build` · `preview` · `check` (svelte-check) · `test` (vite
 The UI follows `DESIGN.md` (generated from mistral.ai via `npx getdesign@latest add mistral.ai`):
 
 - **Palette**: saturated orange primary (`#fa520f`), deep orange pressed (`#cc3a05`), cream surfaces (`#fff8e0`), warm hairlines, ink/charcoal text — a sunset palette.
-- **Type**: PP Editorial Old (near-serif, editorial) for hero displays; Inter for everything else; JetBrains Mono for code.
+- **Type**: PP Editorial Old (falling back to Fraunces — both loaded from Google Fonts) for display; Inter for UI; a system monospace stack for code.
 - **Geometry**: sober and editorial — 8px button radius, 12px card radius, *no* pill buttons (pills reserved for badges).
 - **Signature**: the horizontal sunset-stripe gradient band at the foot of every page.
 - **Modes**: strict light and dark token sets (dark authored explicitly, since the brand has not published a dark palette).
@@ -272,6 +278,7 @@ All colors live as semantic CSS custom properties in `src/styles/tokens.css`; co
 
 ## 13. Roadmap / known limitations
 
-- **Non-streaming responses**: v1 returns a complete JSON body; streaming (SSE) is a drop-in enhancement later without changing the endpoint contract.
-- **Public history**: with no auth, the history table is shared. Per-user history is a future feature (add an auth provider then).
-- **YouTube captions availability**: videos without captions or descriptions fall back to a minimal extraction and the LLM produces what it can.
+- **Non-streaming responses**: the API returns a complete JSON body; streaming (SSE) is a drop-in enhancement later without changing the endpoint contract.
+- **Session-bound history**: history is scoped to an anonymous browser cookie, so clearing cookies clears history. Real per-user accounts are a future feature.
+- **YouTube captions availability**: videos without captions fall back to the description (`LIMITED` quality, flagged in the UI); videos with neither degrade to a minimal extraction.
+- **Readability threshold**: pages under ~80 words are flagged `LIMITED` — the LLM works from what it's given and the quality bucket tells the user how much to trust it.
