@@ -57,7 +57,11 @@ describe('session', () => {
 		const id1 = ensureSessionId(asRequestEvent(first));
 
 		const second = makeEvent();
-		second.cookies.get.mockReturnValue(first.cookies.set.mock.calls[0][1]);
+		// Only the anonymous session cookie is set; the user cookie stays empty.
+		const value = first.cookies.set.mock.calls[0][1] as string;
+		second.cookies.get.mockImplementation((name: string) =>
+			name === SESSION_COOKIE ? value : null
+		);
 		const id2 = ensureSessionId(asRequestEvent(second));
 
 		expect(id2).toBe(id1);
@@ -71,7 +75,9 @@ describe('session', () => {
 		// Flip one character in the signature.
 		const badSig = (sig ?? '').replace(/./, (c) => (c === 'A' ? 'B' : 'A'));
 		const fresh = makeEvent();
-		fresh.cookies.get.mockReturnValue(`${id}.${badSig}`);
+		fresh.cookies.get.mockImplementation((name: string) =>
+			name === SESSION_COOKIE ? `${id}.${badSig}` : null
+		);
 		const newId = ensureSessionId(asRequestEvent(fresh));
 		expect(newId).not.toBe(id);
 		expect(logMock.warn).toHaveBeenCalled();
@@ -82,7 +88,9 @@ describe('session', () => {
 		ensureSessionId(asRequestEvent(event));
 		const [id] = (event.cookies.set.mock.calls[0][1] as string).split('.');
 		const fresh = makeEvent();
-		fresh.cookies.get.mockReturnValue(id); // bare id, no .sig
+		fresh.cookies.get.mockImplementation((name: string) =>
+			name === SESSION_COOKIE ? id : null // bare id, no .sig
+		);
 		expect(ensureSessionId(asRequestEvent(fresh))).not.toBe(id);
 	});
 });
