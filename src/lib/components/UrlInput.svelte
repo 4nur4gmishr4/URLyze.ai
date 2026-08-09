@@ -8,7 +8,7 @@
 		value = '',
 		disabled = false,
 		error = '',
-		placeholder = 'Paste a link — article, blog post, or YouTube video…',
+		placeholder = 'Paste a link, like an article or YouTube video',
 		onsubmit
 	}: {
 		value?: string;
