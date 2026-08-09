@@ -56,7 +56,7 @@
 	</div>
 
 	{#if result.wasDuplicate}
-		<p class="dup-note">This one was already analyzed — showing the saved copy.</p>
+		<p class="dup-note">This one was already analyzed, so you're seeing the saved copy.</p>
 	{/if}
 </div>
 
