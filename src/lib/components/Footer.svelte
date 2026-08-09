@@ -1,9 +1,15 @@
 <script lang="ts">
 	import Logo from './Logo.svelte';
 
-	/** Site footer: brand, product links, legal links, and a closing note. */
+	/** Site footer: brand, product links, output overview, legal links, and a closing bar. */
 
 	const year = new Date().getFullYear();
+
+	const outputs = [
+		{ label: 'Executive sketch', detail: 'The big picture in a fast read.' },
+		{ label: 'Study notes', detail: 'Key ideas laid out for real learning.' },
+		{ label: 'Slide outline', detail: 'A deck-ready structure to present.' }
+	];
 </script>
 
 <footer class="footer">
@@ -17,6 +23,9 @@
 			<p class="caption">
 				Paste a link, get an executive sketch, study notes, and a slide outline in seconds.
 			</p>
+			<p class="caption tagline">
+				Free to use. No account needed. Your history stays on this browser.
+			</p>
 		</div>
 
 		<nav class="footer-col" aria-label="Product links">
@@ -24,17 +33,29 @@
 			<a href="/#how">How it works</a>
 			<a href="/dashboard">Start analyzing</a>
 			<a href="/history">Your history</a>
+			<a href="/settings">Settings</a>
 		</nav>
+
+		<div class="footer-col" aria-label="What you get">
+			<h3 class="col-title">What you get</h3>
+			{#each outputs as out (out.label)}
+				<span class="output-item">
+					<span class="output-label">{out.label}</span>
+					<span class="output-detail">{out.detail}</span>
+				</span>
+			{/each}
+		</div>
 
 		<nav class="footer-col" aria-label="Legal links">
 			<h3 class="col-title">Legal</h3>
 			<a href="/privacy">Privacy</a>
 			<a href="/terms">Terms</a>
 		</nav>
+	</div>
 
-		<div class="footer-note">
-			<p class="caption">© {year} URLyze. Built for people who read a lot.</p>
-		</div>
+	<div class="footer-bottom container">
+		<p class="caption">© {year} URLyze. Built for people who read a lot.</p>
+		<p class="caption stack">SvelteKit · Postgres · Gemini</p>
 	</div>
 </footer>
 
@@ -44,9 +65,9 @@
 	}
 	.footer-inner {
 		display: grid;
-		grid-template-columns: 2fr 1fr 1fr;
+		grid-template-columns: 2fr 1fr 1fr 1fr;
 		gap: var(--space-lg);
-		padding-block: var(--space-xxl);
+		padding-top: var(--space-xxl);
 	}
 	.brand {
 		display: flex;
@@ -66,6 +87,10 @@
 		max-width: 300px;
 		margin-top: var(--space-sm);
 		line-height: 1.6;
+	}
+	.footer-brand .tagline {
+		font-size: 12px;
+		color: var(--text-faint);
 	}
 	.footer-col {
 		display: flex;
@@ -90,14 +115,32 @@
 		color: var(--accent);
 		text-decoration: underline;
 	}
-	.footer-note {
-		grid-column: 1 / -1;
-		margin-top: var(--space-md);
-		padding-top: var(--space-md);
+	.output-item {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+	}
+	.output-label {
+		font-size: 14px;
+		color: var(--text-secondary);
+	}
+	.output-detail {
+		font-size: 12px;
+		color: var(--text-faint);
+	}
+	.footer-bottom {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--space-sm);
+		margin-top: var(--space-lg);
+		padding-block: var(--space-md);
 		border-top: 1px solid var(--border-soft);
 	}
-	.footer-note .caption {
+	.footer-bottom .caption {
 		color: var(--text-faint);
+	}
+	.footer-bottom .stack {
+		font-variant-numeric: tabular-nums;
 	}
 
 	@media (max-width: 700px) {
@@ -106,6 +149,10 @@
 		}
 		.footer-brand {
 			grid-column: 1 / -1;
+		}
+		.footer-bottom {
+			flex-direction: column;
+			align-items: flex-start;
 		}
 	}
 </style>
