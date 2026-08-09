@@ -42,6 +42,15 @@ A user-supplied URL is never fetched directly.
   `X-Frame-Options: DENY`, `Permissions-Policy` (camera/mic/geolocation off),
   HSTS on production only.
 
+## Dependency audit
+
+`npm audit` is clean except two **unreachable** `image-size` advisories
+(ICNS/JXL/HEIF parser DoS) pulled in by `pptxgenjs`. pptxgenjs only ever runs in
+the browser, is lazy-loaded for `.pptx` download, and is never given a
+user-supplied image — the vulnerable parsers can't be reached. The one
+server-side flag (undici via `youtubei.js`) is fixed by pinning `youtubei.js`
+to a patched release. Re-check `npm audit` before each release.
+
 ## Error handling
 
 `AppError(code, message, detail?)` maps each code to an HTTP status
