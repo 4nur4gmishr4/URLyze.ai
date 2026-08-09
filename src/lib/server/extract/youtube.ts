@@ -24,7 +24,12 @@ export async function extractYouTube(url: URL): Promise<ExtractedContent> {
 		generate_session_locally: true
 	});
 
-	const info = await yt.getInfo(videoId);
+	let info;
+	try {
+		info = await yt.getInfo(videoId);
+	} catch (err) {
+		throw new AppError('HTTP_ERROR', 'The video could not be found or is unavailable');
+	}
 	const title = info.basic_info.title?.trim() || 'Untitled video';
 	const metadata: SourceMetadata = {
 		videoId,
@@ -47,7 +52,9 @@ export async function extractYouTube(url: URL): Promise<ExtractedContent> {
 			.filter(Boolean)
 			.join(' ');
 		if (text.trim().length > 0) {
-			const sliced = text.slice(0, MAX_TEXT_CHARS);
+			const sliced = text.length > MAX_TEXT_CHARS 
+				? text.slice(0, MAX_TEXT_CHARS).replace(/\s\S*$/, '') 
+				: text;
 			const wordCount = countWords(sliced);
 			const quality = classifyQuality({ isFallback: false, wordCount, sourceType: 'YOUTUBE' });
 			return {
@@ -73,7 +80,9 @@ export async function extractYouTube(url: URL): Promise<ExtractedContent> {
 			'This video has no transcript or description that can be analyzed'
 		);
 	}
-	const sliced = description.slice(0, MAX_TEXT_CHARS);
+	const sliced = description.length > MAX_TEXT_CHARS 
+		? description.slice(0, MAX_TEXT_CHARS).replace(/\s\S*$/, '') 
+		: description;
 	const wordCount = countWords(sliced);
 	const quality = classifyQuality({ isFallback: true, wordCount, sourceType: 'YOUTUBE' });
 	return {
