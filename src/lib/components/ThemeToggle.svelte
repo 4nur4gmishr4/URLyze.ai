@@ -5,10 +5,10 @@
 <button
 	class="theme-toggle"
 	onclick={toggleTheme}
-	aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-	title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+	aria-label={theme.value === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+	title={theme.value === 'dark' ? 'Light mode' : 'Dark mode'}
 >
-	{#if theme === 'dark'}
+	{#if theme.value === 'dark'}
 		<span class="icon sun" aria-hidden="true">
 			<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
 				<circle cx="12" cy="12" r="4" />
