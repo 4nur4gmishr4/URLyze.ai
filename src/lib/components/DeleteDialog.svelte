@@ -62,13 +62,13 @@
 	bind:this={dialog}
 	class="dialog"
 	aria-labelledby="dialog-title"
+	aria-describedby={message ? 'dialog-message' : undefined}
 	onclose={onclose}
 	onclick={onBackdropClick}
-	onkeydown={(e) => e.key === 'Escape' && close()}
 >
 	<div class="dialog-panel">
 		<h2 id="dialog-title" class="dialog-title">{title}</h2>
-		{#if message}<p class="dialog-message">{message}</p>{/if}
+		{#if message}<p id="dialog-message" class="dialog-message">{message}</p>{/if}
 		<div class="dialog-actions">
 			<button class="btn btn-secondary" data-cancel onclick={close} disabled={busy}>
 				Cancel
