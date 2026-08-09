@@ -57,7 +57,7 @@
 		display: inline-block;
 		width: 14px;
 		height: 14px;
-		border: 2px solid rgba(255, 255, 255, 0.35);
+		border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
 		border-top-color: currentColor;
 		border-radius: 50%;
 		animation: spin 0.6s linear infinite;
